@@ -1,0 +1,15 @@
+name: build-focal
+run-name: ${{ github.actor }} is performing a FACT build and runs tests
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux, x64, focal]
+    steps:
+      - name: ls-1
+        run: ls -la
+      - name: touch
+        run: touch test123.txt
+      - name: ls-2
+        run: ls -la
