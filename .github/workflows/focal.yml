@@ -1,5 +1,5 @@
 name: build-focal
-run-name: ${{ github.actor }} is performing a FACT build and runs tests
+run-name: FACT build and run tests
 on:
   push:
 
