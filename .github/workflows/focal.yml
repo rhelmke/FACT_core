@@ -14,8 +14,8 @@ jobs:
           echo "::add-mask::${{ secrets.NPM_REGISTRY_AUTH }}"
       - name: test
         run: |
-          echo "${{ secrets.NPM_REGISTRY_URL }}" >> test
-          cat test
+          echo "${{ secrets.NPM_REGISTRY_URL }}" >> /tmp/test
+          cat /tmp/test
           #- name: Checkout Branch
           #  uses: actions/checkout@v3
           #  with:
