@@ -4,8 +4,9 @@ on:
   push:
 
 jobs:
-  build:
+  CI:
     runs-on: [self-hosted, linux, x64, focal]
+    timeout-minutes: 60
     steps:
       - name: Add Masks
         run: |
