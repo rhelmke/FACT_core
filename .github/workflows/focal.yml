@@ -12,31 +12,27 @@ jobs:
         run: |
           echo "::add-mask::${{ secrets.NPM_REGISTRY_URL }}"
           echo "::add-mask::${{ secrets.NPM_REGISTRY_AUTH }}"
-      - name: test
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set ulimit
+        run: ulimit -n 9999
+      - name: Pre-Installation
+        shell: 'script -q -e -c "bash {0}"'
+        run: ./src/install/pre_install.sh
+      - name: Pre-Install Nodejs
+        shell: 'script -q -e -c "bash {0}"'
         run: |
-          echo "${{ secrets.NPM_REGISTRY_URL }}" >> /tmp/test
-          cat /tmp/test
-          #- name: Checkout Branch
-          #  uses: actions/checkout@v3
-          #  with:
-          #    ref: ${{ github.ref }}
-          #- name: Set ulimit
-          #  run: ulimit -n 9999
-          #- name: Pre-Installation
-          #  shell: 'script -q -e -c "bash {0}"'
-          #  run: ./src/install/pre_install.sh
-          #- name: Pre-Install Nodejs
-          #  shell: 'script -q -e -c "bash {0}"'
-          #  run: |
-          #    sudo apt install -y nodejs
-          #    npm config set always-auth=true --registry "https://${{ secrets.NPM_REGISTRY_URL }}/"
-          #    npm config set _auth="$(echo -n "${{ secrets.NPM_REGISTRY_AUTH }}" | base64)" --registry "https://${{ secrets.NPM_REGISTRY_URL }}/"
-          #- name: Install FACT
-          #  shell: 'script -q -e -c "bash {0}"'
-          #  run: |
-          #    ./src/install.py -U -R -N -L DEBUG
-          #- name: Unit Tests
-          #  shell: 'script -q -e -c "bash {0}"'
-          #  run: |
-          #    sudo -EH pip3 install codecov
-          #    pytest --cov=./
+          sudo apt install -y nodejs
+          npm config set always-auth=true --registry "https://${{ secrets.NPM_REGISTRY_URL }}/"
+          npm config set _auth="$(echo -n "${{ secrets.NPM_REGISTRY_AUTH }}" | base64)" --registry "https://${{ secrets.NPM_REGISTRY_URL }}/"
+      - name: Install FACT
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          ./src/install.py -U -R -N -L DEBUG
+      - name: Unit Tests
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          sudo -EH pip3 install codecov
+          pytest --cov=./
