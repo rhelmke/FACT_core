@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: [self-hosted, linux, x64, focal]
     steps:
-      - name: Mask our little secrets
+      - name: Add Masks
         run: |
           echo "::add-mask::${{ secrets.NPM_REGISTRY_URL }}"
           echo "::add-mask::${{ secrets.NPM_REGISTRY_AUTH }}"
@@ -18,8 +18,10 @@ jobs:
       - name: Set ulimit
         run: ulimit -n 9999
       - name: Perform Pre-Installation Steps
+        shell: 'script -q -e -c "bash {0}"'
         run: ./src/install/pre_install.sh
       - name: Pre-Install Nodejs
+        shell: 'script -q -e -c "bash {0}"'
         run: |
           sudo apt install -y nodejs
           npm config set always-auth=true --registry "${{ secrets.NPM_REGISTRY_URL }}"
