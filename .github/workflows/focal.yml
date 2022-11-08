@@ -27,3 +27,22 @@ jobs:
           sudo apt install -y nodejs
           npm config set always-auth=true --registry "${{ secrets.NPM_REGISTRY_URL }}"
           npm config set _auth="$(echo -n "${{ secrets.NPM_REGISTRY_AUTH }}" | base64)" --registry "${{ secrets.NPM_REGISTRY_URL }}"
+      - name: Pre-Install Nodejs
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          sudo apt install -y nodejs
+          npm config set always-auth=true --registry "${{ secrets.NPM_REGISTRY_URL }}"
+          npm config set _auth="$(echo -n "${{ secrets.NPM_REGISTRY_AUTH }}" | base64)" --registry "${{ secrets.NPM_REGISTRY_URL }}"
+      - name: Install FACT
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          ./src/install.py -U -R -N -L DEBUG
+      - name: Run FACT Installation Routine
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          ./src/install.py -U -R -N -L DEBUG
+      - name: Run Unit Tests
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          sudo -EH pip3 install codecov
+          pytest --cov=./
