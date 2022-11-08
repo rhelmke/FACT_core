@@ -7,9 +7,20 @@ jobs:
   build:
     runs-on: [self-hosted, linux, x64, focal]
     steps:
-      - name: ls-1
-        run: ls -la
-      - name: touch
-        run: touch test123.txt
-      - name: ls-2
-        run: ls -la
+      - name: Mask our little secrets
+        run: |
+          echo "::add-mask::${{ secrets.NPM_REGISTRY_URL }}"
+          echo "::add-mask::${{ secrets.NPM_REGISTRY_AUTH }}"
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set ulimit
+        run: ulimit -n 9999
+      - name: Perform Pre-Installation Steps
+        run: ./src/install/pre_install.sh
+      - name: Pre-Install Nodejs
+        run: |
+          sudo apt install -y nodejs
+          npm config set always-auth=true --registry "${{ secrets.NPM_REGISTRY_URL }}"
+          npm config set _auth="$(echo -n "${{ secrets.NPM_REGISTRY_AUTH }}" | base64)" --registry "${{ secrets.NPM_REGISTRY_URL }}"
